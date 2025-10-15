@@ -141,3 +141,53 @@ static void print_menu(void) {
     printf("0. Salir\n");
     printf("Elija una opción: ");
 }
+
+int main(void) {
+    struct Node *head = NULL;
+    char name[NAME_LEN];
+
+    while (1) {
+        print_menu();
+        int opt = read_int_valid(NULL, 0);
+
+        if (opt == 0) break;
+
+        if (opt == 1 || opt == 2) {
+            int id = read_int_valid("Ingrese ID (entero >= 0): ", 0);
+            if (find_node(head, id)) { printf("Error: ID %d ya existe.\n", id); continue; }
+            while (1) {
+                printf("Ingrese nombre (no vacío, max %d caracteres): ", NAME_LEN-1);
+                read_line(name, NAME_LEN);
+                if (name[0] == '\0') { printf("Nombre vacío, intente de nuevo.\n"); continue; }
+                break;
+            }
+            int stock = read_int_valid("Ingrese stock (entero >= 0): ", 0);
+            bool ok = (opt == 1) ? insert_front(&head, id, name, stock) : insert_back(&head, id, name, stock);
+            if (ok) printf("Producto insertado correctamente.\n");
+            else printf("Error al insertar producto.\n");
+        } else if (opt == 3) {
+            int id = read_int_valid("Ingrese ID a buscar: ", 0);
+            struct Node *n = find_node(head, id);
+            if (!n) printf("Producto con ID %d no encontrado.\n", id);
+            else printf("Id: %d\nNombre: %s\nStock: %d\n", n->id, n->name, n->stock);
+        } else if (opt == 4) {
+            int id = read_int_valid("Ingrese ID a actualizar: ", 0);
+            if (!find_node(head, id)) { printf("Producto con ID %d no existe.\n", id); continue; }
+            int new_stock = read_int_valid("Ingrese nuevo stock (>= 0): ", 0);
+            if (set_stock(head, id, new_stock)) printf("Stock actualizado.\n");
+            else printf("Error al actualizar stock.\n");
+        } else if (opt == 5) {
+            int id = read_int_valid("Ingrese ID a eliminar: ", 0);
+            if (remove_product(&head, id)) printf("Producto eliminado.\n");
+            else printf("No se encontró producto con ID %d.\n", id);
+        } else if (opt == 6) {
+            list_products(head);
+        } else {
+            printf("Opción inválida. Intente de nuevo.\n");
+        }
+    }
+
+    free_list(head);
+    printf("Saliendo. Memoria liberada.\n");
+    return 0;
+}
