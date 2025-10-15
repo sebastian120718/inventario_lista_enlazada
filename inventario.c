@@ -38,3 +38,33 @@ static int read_int_valid(const char *prompt, int min_allowed) {
         return (int)val;
     }
 }
+
+static struct Node *create_node(int id, const char *name, int stock) {
+    struct Node *n = malloc(sizeof(struct Node));
+    if (!n) return NULL;
+    n->id = id;
+    strncpy(n->name, name, NAME_LEN);
+    n->name[NAME_LEN-1] = '\0';
+    n->stock = stock;
+    n->next = NULL;
+    return n;
+}
+
+static void free_list(struct Node *head) {
+    struct Node *p = head;
+    while (p) {
+        struct Node *tmp = p;
+        p = p->next;
+        free(tmp);
+    }
+}
+
+/* Busca nodo por id; devuelve puntero o NULL */
+static struct Node *find_node(struct Node *head, int id) {
+    struct Node *p = head;
+    while (p) {
+        if (p->id == id) return p;
+        p = p->next;
+    }
+    return NULL;
+}
