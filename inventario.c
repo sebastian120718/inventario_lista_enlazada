@@ -117,3 +117,27 @@ static bool set_stock(struct Node *head, int id, int new_stock) {
     n->stock = new_stock;
     return true;
 }
+
+static void list_products(struct Node *head) {
+    if (!head) { printf("Inventario vacío.\n"); return; }
+    printf("\nID\tNombre\t\t\tStock\n");
+    printf("------------------------------------------------\n");
+    struct Node *p = head;
+    while (p) {
+        printf("%d\t%-20s\t%d\n", p->id, p->name, p->stock);
+        p = p->next;
+    }
+}
+
+/* Menú (impresión) */
+static void print_menu(void) {
+    printf("\n--- MENU - Inventario ---\n");
+    printf("1. Insertar producto al inicio\n");
+    printf("2. Insertar producto al final\n");
+    printf("3. Buscar por ID y mostrar datos\n");
+    printf("4. Actualizar stock por ID\n");
+    printf("5. Eliminar producto por ID\n");
+    printf("6. Listar inventario completo\n");
+    printf("0. Salir\n");
+    printf("Elija una opción: ");
+}
