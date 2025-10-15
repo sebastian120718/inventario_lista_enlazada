@@ -68,3 +68,52 @@ static struct Node *find_node(struct Node *head, int id) {
     }
     return NULL;
 }
+
+static bool insert_front(struct Node **head_ref, int id, const char *name, int stock) {
+    if (find_node(*head_ref, id)) return false;
+    struct Node *n = create_node(id, name, stock);
+    if (!n) return false;
+    n->next = *head_ref;
+    *head_ref = n;
+    return true;
+}
+
+/* Inserta al final; evita IDs duplicados */
+static bool insert_back(struct Node **head_ref, int id, const char *name, int stock) {
+    if (find_node(*head_ref, id)) return false;
+    struct Node *n = create_node(id, name, stock);
+    if (!n) return false;
+    if (*head_ref == NULL) {
+        *head_ref = n;
+    } else {
+        struct Node *p = *head_ref;
+        while (p->next) p = p->next;
+        p->next = n;
+    }
+    return true;
+}
+
+/* Elimina por id; devuelve true si se eliminó */
+static bool remove_product(struct Node **head_ref, int id) {
+    struct Node *cur = *head_ref;
+    struct Node *prev = NULL;
+    while (cur) {
+        if (cur->id == id) {
+            if (prev) prev->next = cur->next;
+            else *head_ref = cur->next;
+            free(cur);
+            return true;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+    return false;
+}
+
+/* Actualiza stock por id; devuelve true si encontrado */
+static bool set_stock(struct Node *head, int id, int new_stock) {
+    struct Node *n = find_node(head, id);
+    if (!n) return false;
+    n->stock = new_stock;
+    return true;
+}
